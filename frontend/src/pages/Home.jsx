@@ -65,7 +65,11 @@ const Home = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="collapse navbar-collapse" id="navbarNav">
+          <div 
+            className="collapse navbar-collapse" 
+            id="navbarNav"
+            style={{ backgroundColor: "#001d4d" }} 
+          >
             <ul className="navbar-nav ms-auto gap-3 align-items-center">
               <li className="nav-item">
                 <Link 
