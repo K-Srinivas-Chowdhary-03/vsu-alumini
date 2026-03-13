@@ -68,7 +68,11 @@ const Home = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto gap-3 align-items-center">
               <li className="nav-item">
-                <Link className="nav-link text-white fw-semibold" to="/">
+                <Link 
+                  className="nav-link text-white fw-semibold" 
+                  to="/"
+                  onClick={() => document.getElementById('navbarNav').classList.remove('show')}
+                >
                   Home
                 </Link>
               </li>
@@ -79,6 +83,7 @@ const Home = () => {
                     <Link
                       className="nav-link text-white fw-semibold"
                       to="/jobs"
+                      onClick={() => document.getElementById('navbarNav').classList.remove('show')}
                     >
                       Job Board
                     </Link>
@@ -87,6 +92,7 @@ const Home = () => {
                     <Link
                       className="nav-link text-white fw-semibold"
                       to="/alumni-network"
+                      onClick={() => document.getElementById('navbarNav').classList.remove('show')}
                     >
                       Our Alumni
                     </Link>

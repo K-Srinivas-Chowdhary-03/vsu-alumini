@@ -17,7 +17,7 @@ const Login = () => {
       setShowSuccessDialog(true);
       setTimeout(() => {
         navigate("/");
-      }, 2000);
+      }, 1000);
     } catch (err) {
       alert(err.response?.data?.error || "Login Failed");
     }
