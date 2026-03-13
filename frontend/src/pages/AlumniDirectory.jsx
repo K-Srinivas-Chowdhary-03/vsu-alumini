@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 
 const AlumniDirectory = () => {
   const [alumni, setAlumni] = useState([]);
-
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -28,12 +28,15 @@ const AlumniDirectory = () => {
   });
 
   const fetchAlumni = async () => {
+    setIsLoading(true);
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/alumni`);
 
       setAlumni(res.data);
     } catch (err) {
       console.error("Error fetching alumni");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -181,42 +184,55 @@ const AlumniDirectory = () => {
         )}
 
         <div className="row g-4">
-          {alumni.map((alumnus) => (
-            <div key={alumnus._id} className="col-md-4">
-              <motion.div
-                whileHover={{ y: -10 }}
-                className="card border-0 shadow-lg p-4 h-100 rounded-4 text-center"
-              >
-                <div
-                  className="mx-auto mb-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                  style={{ width: "60px", height: "60px" }}
-                >
-                  <i className="bi bi-person-fill fs-3"></i>
-                </div>
-
-                <h5 className="fw-bold mb-1">{alumnus.name}</h5>
-
-                <p className="text-primary small mb-2">
-                  {alumnus.role} @ {alumnus.company}
-                </p>
-
-                <span className="badge bg-light text-dark mb-3">
-                  Batch: {alumnus.batchFrom} - {alumnus.batchTo}
-                </span>
-
-                {alumnus.linkedin && (
-                  <a
-                    href={alumnus.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn btn-outline-primary btn-sm rounded-pill w-100"
-                  >
-                    <i className="bi bi-linkedin me-2"></i>View LinkedIn
-                  </a>
-                )}
-              </motion.div>
+          {isLoading ? (
+            <div className="col-12 text-center py-5">
+              <div className="spinner-border text-warning" role="status" style={{ width: "3rem", height: "3rem" }}>
+                <span className="visually-hidden">Loading Alumni...</span>
+              </div>
+              <p className="text-white mt-3 lead opacity-75">Connecting with graduates...</p>
             </div>
-          ))}
+          ) : alumni.length === 0 ? (
+            <div className="col-12 text-center py-5">
+              <p className="text-white lead opacity-50">No alumni records found.</p>
+            </div>
+          ) : (
+            alumni.map((alumnus) => (
+              <div key={alumnus._id} className="col-md-4">
+                <motion.div
+                  whileHover={{ y: -10 }}
+                  className="card border-0 shadow-lg p-4 h-100 rounded-4 text-center"
+                >
+                  <div
+                    className="mx-auto mb-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                    style={{ width: "60px", height: "60px" }}
+                  >
+                    <i className="bi bi-person-fill fs-3"></i>
+                  </div>
+
+                  <h5 className="fw-bold mb-1">{alumnus.name}</h5>
+
+                  <p className="text-primary small mb-2">
+                    {alumnus.role} @ {alumnus.company}
+                  </p>
+
+                  <span className="badge bg-light text-dark mb-3">
+                    Batch: {alumnus.batchFrom} - {alumnus.batchTo}
+                  </span>
+
+                  {alumnus.linkedin && (
+                    <a
+                      href={alumnus.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-outline-primary btn-sm rounded-pill w-100"
+                    >
+                      <i className="bi bi-linkedin me-2"></i>View LinkedIn
+                    </a>
+                  )}
+                </motion.div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ const Register = () => {
     role: "",
     company: "",
   });
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const validate = () => {
     const emailRegex = /\S+@\S+\.\S+/;
@@ -36,7 +37,7 @@ const Register = () => {
     const error = validate();
     if (error) return alert(error);
 
-    setLoading(true);
+    setIsRegistering(true);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/register`,
@@ -50,7 +51,7 @@ const Register = () => {
     } catch (err) {
       alert(err.response?.data?.error || "Registration failed");
     } finally {
-      setLoading(false);
+      setIsRegistering(false);
     }
   };
 
@@ -183,11 +184,18 @@ const Register = () => {
 
                 <div className="col-12 mt-4">
                   <button
-                    disabled={loading}
+                    disabled={isRegistering}
                     type="submit"
-                    className="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow"
+                    className="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow d-flex align-items-center justify-content-center"
                   >
-                    {loading ? "Processing..." : "Create Account"}
+                    {isRegistering ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Creating Account...
+                      </>
+                    ) : (
+                      "Create Account"
+                    )}
                   </button>
                 </div>
               </form>

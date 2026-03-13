@@ -16,4 +16,7 @@ const AlumniSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+AlumniSchema.index({ company: 1 });
+AlumniSchema.index({ batchFrom: 1 });
+
 module.exports = mongoose.model("Alumni", AlumniSchema);

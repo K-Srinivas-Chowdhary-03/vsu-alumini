@@ -6,6 +6,7 @@ import LogoutButton from "./LogoutButton";
 const JobBoard = () => {
   const [jobs, setJobs] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // 1. Get user data from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
@@ -25,11 +26,14 @@ const JobBoard = () => {
   });
 
   const fetchJobs = async () => {
+    setIsLoading(true);
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/jobs`);
       setJobs(res.data);
     } catch (err) {
       console.error("Error fetching jobs");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -193,48 +197,61 @@ const JobBoard = () => {
         )}
 
         <div className="row g-4">
-          {jobs.map((job) => (
-            <div key={job._id} className="col-lg-6">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="card border-0 shadow-lg p-4 h-100"
-                style={{
-                  borderRadius: "25px",
-                  background: "rgba(255, 255, 255, 0.12)",
-                  backdropFilter: "blur(10px)",
-                  color: "white",
-                }}
-              >
-                <div className="d-flex justify-content-between align-items-start">
-                  <div>
-                    <h3 className="fw-bold mb-1 text-warning">{job.title}</h3>
-                    <h5>
-                      {job.company} •{" "}
-                      <span className="small opacity-75">{job.location}</span>
-                    </h5>
-                  </div>
-                  <span className="badge bg-primary px-3 py-2 rounded-pill">
-                    Active
-                  </span>
-                </div>
-                <p className="mt-3 opacity-90">{job.description}</p>
-                <hr className="bg-white opacity-25" />
-                <div className="d-flex justify-content-between align-items-center mt-3">
-                  <small className="opacity-75">
-                    Posted by Alumnus: <strong>{job.postedBy}</strong>
-                  </small>
-                  <a
-                    href={job.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn btn-light btn-sm rounded-pill px-4 fw-bold"
-                  >
-                    Apply Now
-                  </a>
-                </div>
-              </motion.div>
+          {isLoading ? (
+            <div className="col-12 text-center py-5">
+              <div className="spinner-border text-warning" role="status" style={{ width: "3rem", height: "3rem" }}>
+                <span className="visually-hidden">Loading Jobs...</span>
+              </div>
+              <p className="text-white mt-3 lead opacity-75">Fetching latest opportunities...</p>
             </div>
-          ))}
+          ) : jobs.length === 0 ? (
+            <div className="col-12 text-center py-5">
+              <p className="text-white lead opacity-50">No jobs posted yet.</p>
+            </div>
+          ) : (
+            jobs.map((job) => (
+              <div key={job._id} className="col-lg-6">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="card border-0 shadow-lg p-4 h-100"
+                  style={{
+                    borderRadius: "25px",
+                    background: "rgba(255, 255, 255, 0.12)",
+                    backdropFilter: "blur(10px)",
+                    color: "white",
+                  }}
+                >
+                  <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h3 className="fw-bold mb-1 text-warning">{job.title}</h3>
+                      <h5>
+                        {job.company} •{" "}
+                        <span className="small opacity-75">{job.location}</span>
+                      </h5>
+                    </div>
+                    <span className="badge bg-primary px-3 py-2 rounded-pill">
+                      Active
+                    </span>
+                  </div>
+                  <p className="mt-3 opacity-90">{job.description}</p>
+                  <hr className="bg-white opacity-25" />
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <span className="small text-white-50">
+                      Posted by <strong>{job.postedBy}</strong>
+                    </span>
+                    <a
+                      href={job.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-warning btn-sm rounded-pill px-4 fw-bold shadow-sm"
+                    >
+                      Apply Now
+                    </a>
+                  </div>
+                </motion.div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

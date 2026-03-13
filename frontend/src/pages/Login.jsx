@@ -7,9 +7,13 @@ const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, formData);
       localStorage.setItem("token", res.data.token);
@@ -19,7 +23,10 @@ const Login = () => {
         navigate("/");
       }, 1000);
     } catch (err) {
-      alert(err.response?.data?.error || "Login Failed");
+      setErrorMessage(err.response?.data?.error || "Login Failed. Please check your credentials.");
+      setShowErrorDialog(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -65,9 +72,17 @@ const Login = () => {
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-primary w-100 py-3 fw-bold rounded-pill"
+                  disabled={isLoading}
+                  className="btn btn-primary w-100 py-3 fw-bold rounded-pill d-flex align-items-center justify-content-center"
                 >
-                  Login to Portal
+                  {isLoading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Logging in...
+                    </>
+                  ) : (
+                    "Login to Portal"
+                  )}
                 </button>
               </form>
               <p className="text-center mt-3 small">
@@ -96,6 +111,31 @@ const Login = () => {
             <i className="bi bi-check-circle-fill" style={{ fontSize: "3rem" }}></i>
             <h4 className="fw-bold mt-3 mb-0">Login Successful!</h4>
             <p className="small mb-0 mt-2 text-white-50">Redirecting...</p>
+          </motion.div>
+        </div>
+      )}
+
+      {showErrorDialog && (
+        <div 
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+          style={{ zIndex: 1050, backgroundColor: 'rgba(0,0,0,0.4)' }}
+        >
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white p-4 rounded-4 shadow-lg text-center border-top border-danger border-5"
+            style={{ minWidth: "320px" }}
+          >
+            <i className="bi bi-x-circle-fill text-danger" style={{ fontSize: "3rem" }}></i>
+            <h4 className="fw-bold mt-3 text-dark">Login Failed</h4>
+            <p className="text-muted mb-4">{errorMessage}</p>
+            <button 
+              className="btn btn-danger w-100 rounded-pill fw-bold py-2"
+              onClick={() => setShowErrorDialog(false)}
+            >
+              Try Again
+            </button>
           </motion.div>
         </div>
       )}
