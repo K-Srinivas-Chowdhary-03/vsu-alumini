@@ -18,13 +18,14 @@ const Register = () => {
   const [isRegistering, setIsRegistering] = useState(false);
 
   const validate = () => {
-    const emailRegex = /\S+@\S+\.\S+/;
-    const pwdRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,})/;
+    if (!formData.email.endsWith("@gmail.com"))
+      return "Only @gmail.com addresses are accepted to prevent fake accounts.";
+    
+    // Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+    const pwdRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    if (!emailRegex.test(formData.email))
-      return "Invalid email format (@ missing)";
     if (!pwdRegex.test(formData.password))
-      return "Password must be 6+ chars, 1 Uppercase, 1 Special char";
+      return "Password must be 8+ chars, include Uppercase, Lowercase, Number, and Special char (@$!%*?&)";
     if (formData.password !== formData.confirmPassword)
       return "Passwords do not match";
     if (userType === "alumni" && (!formData.role || !formData.company))

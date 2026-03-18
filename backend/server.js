@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 const app = express();
 
@@ -66,9 +67,22 @@ app.post("/api/register", async (req, res) => {
     const existingUser = await Alumni.findOne({ $or: [{ email }, { rollNumber }] });
     if (existingUser) return res.status(400).json({ error: "User with this email or roll number already exists." });
 
+    // 1. Gmail Only Domain Check
+    if (!email.endsWith("@gmail.com")) {
+      return res.status(400).json({ error: "Only @gmail.com addresses are accepted to prevent fake accounts." });
+    }
+
+    // 2. Password Strength Check
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ error: "Password must be at least 8 characters, include an uppercase letter, a number, and a special character." });
+    }
+
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
 
     const newUser = new Alumni({
       name,
@@ -82,11 +96,19 @@ app.post("/api/register", async (req, res) => {
           : "Student",
       designation: role,
       company: company || "Not specified",
-      isApproved: true, // Auto-approved
+      isApproved: true, 
+      isEmailVerified: false,
+      verificationToken: verificationToken
     });
 
     await newUser.save();
-    res.status(201).json({ message: "Registration successful! You can now log in." });
+
+    // SIMULATED EMAIL LOGGING
+    console.log(`\n--- VERIFICATION EMAIL SENT TO ${email} ---`);
+    console.log(`Link: http://localhost:5001/api/verify-email/${verificationToken}`);
+    console.log(`-------------------------------------------\n`);
+
+    res.status(201).json({ message: "Registration successful! Please check your email (simulated in console) to verify your account." });
   } catch (err) {
     res.status(500).json({ error: "Database Error: " + err.message });
   }
@@ -106,6 +128,10 @@ app.post("/api/login", async (req, res) => {
       if (password !== user.password) {
         return res.status(400).json({ error: "Invalid credentials" });
       }
+    }
+
+    if (!user.isEmailVerified) {
+      return res.status(403).json({ error: "Please verify your email before logging in." });
     }
 
     const token = jwt.sign(
@@ -224,6 +250,40 @@ app.patch("/api/admin/reject/:id", verifyToken, authorizeRoles("Admin"), async (
     res.json({ message: "User registration rejected and removed" });
   } catch (err) {
     res.status(500).json({ error: "Failed to reject user" });
+  }
+});
+
+// --- NEW VERIFICATION & UPGRADE ROUTES ---
+
+app.get("/api/verify-email/:token", async (req, res) => {
+  try {
+    const user = await Alumni.findOne({ verificationToken: req.params.token });
+    if (!user) return res.status(400).send("<h1>Verification Failed</h1><p>Invalid or expired link.</p>");
+
+    user.isEmailVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.send("<h1>Email Verified!</h1><p>You can now close this tab and log in to the portal.</p>");
+  } catch (err) {
+    res.status(500).send("Verification failed.");
+  }
+});
+
+app.patch("/api/user/upgrade-to-alumni", verifyToken, async (req, res) => {
+  try {
+    const user = await Alumni.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (user.role !== "Student") {
+      return res.status(400).json({ error: "Only students can upgrade to alumni status." });
+    }
+
+    user.role = "Alumnus";
+    await user.save();
+    res.json({ message: "Successfully upgraded to Alumnus status!", user });
+  } catch (err) {
+    res.status(500).json({ error: "Upgrade failed." });
   }
 });
 

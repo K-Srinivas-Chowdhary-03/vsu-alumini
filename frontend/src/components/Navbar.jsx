@@ -5,6 +5,17 @@ const Navbar = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
+  const [theme, setTheme] = React.useState(localStorage.getItem("theme") || "light");
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -36,6 +47,23 @@ const Navbar = () => {
             </li>
             <li className="nav-item">
               <Link className="nav-link px-3" to="/news">News</Link>
+            </li>
+            <li className="nav-item ms-lg-3">
+              <button 
+                className="btn btn-outline-warning rounded-circle p-2" 
+                onClick={toggleTheme}
+                title="Toggle Dark/Light Mode"
+              >
+                <i className={`bi bi-${theme === "light" ? "moon-fill" : "sun-fill"}`}></i>
+              </button>
+            </li>
+            <li className="nav-item ms-lg-2">
+              <div className="position-relative">
+                <i className="bi bi-bell-fill text-white fs-5 cursor-pointer"></i>
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
+                  2
+                </span>
+              </div>
             </li>
             {!user ? (
               <li className="nav-item">

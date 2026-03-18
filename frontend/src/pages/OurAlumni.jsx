@@ -78,18 +78,18 @@ const AlumniDirectory = () => {
             >
               <div className="text-center mb-5 text-white">
                 <h1 className="display-4 fw-bold">VSU-Kavali Alumni Portal</h1>
-                {isAlumni && (
+                {user?.role === "Admin" && (
                   <button 
                     onClick={() => {
                       const newProfile = {
-                        id: Date.now(),
-                        name: "Your Name",
-                        from: "2020",
-                        to: "2024",
-                        role: "Your Role",
-                        company: "Your Company",
-                        image: "https://ui-avatars.com/api/?name=New+User&background=0D6EFD&color=fff",
-                        linkedin: "https://linkedin.com/in/yourprofile"
+                        _id: `temp_${Date.now()}`,
+                        name: "New Profile",
+                        batchFrom: "2020",
+                        batchTo: "2024",
+                        designation: "Software Engineer",
+                        company: "Company Name",
+                        profileImage: "",
+                        linkedin: ""
                       };
                       setAlumniList([newProfile, ...alumniList]);
                       setSelectedAlumni(newProfile);
@@ -97,7 +97,7 @@ const AlumniDirectory = () => {
                     }}
                     className="btn btn-success rounded-pill px-4 fw-bold shadow mb-4"
                   >
-                    + Add My Profile
+                    + Add New Profile (Admin Only)
                   </button>
                 )}
                 <div className="row g-2 w-75 mx-auto">
@@ -212,7 +212,7 @@ const AlumniDirectory = () => {
                             </label>
                           )}
                         </div>
-                        {isEditing && isAlumni ? (
+                        {isEditing && (user.role === "Admin" || user.id === selectedAlumni._id) ? (
                           <button
                             onClick={handleSaveProfile}
                             disabled={loading}
@@ -220,7 +220,7 @@ const AlumniDirectory = () => {
                           >
                             {loading ? "Saving..." : "Save Changes"}
                           </button>
-                        ) : isAlumni && user.id === selectedAlumni._id ? (
+                        ) : (user.role === "Admin" || user.id === selectedAlumni._id) ? (
                           <button
                             onClick={() => setIsEditing(true)}
                             className="btn btn-warning rounded-pill px-4 mb-3 w-75 shadow fw-bold"
@@ -228,6 +228,24 @@ const AlumniDirectory = () => {
                             Edit Profile
                           </button>
                         ) : null}
+                        {user?.role === "Student" && user.id === selectedAlumni._id && (
+                          <button
+                            onClick={async () => {
+                              try {
+                                await axios.patch(`${import.meta.env.VITE_API_URL}/api/user/upgrade-to-alumni`, {}, {
+                                  headers: { Authorization: token }
+                                });
+                                alert("Congratulations! You are now an Alumnus.");
+                                window.location.reload();
+                              } catch (err) {
+                                alert("Upgrade failed: " + (err.response?.data?.error || err.message));
+                              }
+                            }}
+                            className="btn btn-info rounded-pill px-4 mb-3 w-75 shadow fw-bold text-white"
+                          >
+                            Step Up to Alumnus
+                          </button>
+                        )}
                         <button
                           onClick={() => {
                             setSelectedAlumni(null);

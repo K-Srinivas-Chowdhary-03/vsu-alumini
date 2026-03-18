@@ -1,11 +1,33 @@
-body,
-html {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* Prevents horizontal scrolling */
+:root {
+  --bg-color: #f8f9fa;
+  --text-color: #212529;
+  --card-bg: #ffffff;
+  --navbar-bg: #001d4d;
 }
 
-.row {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+[data-theme='dark'] {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --card-bg: #1e1e1e;
+  --navbar-bg: #000000;
+}
+
+body {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
+
+.navbar {
+  background-color: var(--navbar-bg) !important;
+}
+
+.text-muted {
+  color: var(--text-color) !important;
+  opacity: 0.7;
 }

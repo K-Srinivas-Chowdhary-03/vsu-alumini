@@ -15,6 +15,8 @@ const AlumniSchema = new mongoose.Schema(
       default: "Student"
     },
     isApproved: { type: Boolean, default: true },
+    isEmailVerified: { type: Boolean, default: false },
+    verificationToken: { type: String },
     designation: { type: String, default: "" },
     company: { type: String, default: "" },
     linkedin: { type: String, default: "" },
