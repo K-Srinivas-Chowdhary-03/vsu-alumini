@@ -29,6 +29,8 @@ const Register = () => {
       return "Passwords do not match";
     if (userType === "alumni" && (!formData.role || !formData.company))
       return "All Alumni fields are required";
+    if (!formData.rollNumber)
+      return "Roll Number/ID is required";
     return null;
   };
 
@@ -97,7 +99,19 @@ const Register = () => {
 
               <form onSubmit={handleSubmit} className="row g-3">
                 <div className="col-12">
-                  <label className="small fw-bold">NAME</label>
+                  <label className="small fw-bold text-uppercase">Roll Number / Student ID</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter your Roll Number"
+                    onChange={(e) =>
+                      setFormData({ ...formData, rollNumber: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="col-12">
+                  <label className="small fw-bold text-uppercase">NAME</label>
                   <input
                     type="text"
                     className="form-control"

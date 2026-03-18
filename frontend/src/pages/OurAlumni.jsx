@@ -4,46 +4,60 @@ import { motion, AnimatePresence } from "framer-motion";
 const initialAlumni = [];
 
 const AlumniDirectory = () => {
-  const [alumniList, setAlumniList] = useState(() => {
-    const saved = localStorage.getItem("svu_alumni_data_v2");
-    return saved ? JSON.parse(saved) : initialAlumni;
-  });
-
+  const [alumniList, setAlumniList] = useState([]);
   const [selectedAlumni, setSelectedAlumni] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    name: "",
+    batch: "",
+    company: ""
+  });
 
   const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
   const isAlumni =
     user?.role?.toLowerCase() === "alumnus" ||
     user?.role?.toLowerCase() === "alumni";
 
-  useEffect(() => {
-    localStorage.setItem("svu_alumni_data_v2", JSON.stringify(alumniList));
-  }, [alumniList]);
-
-  const handleUpdate = (field, value) => {
-    const updatedList = alumniList.map((a) =>
-      a.id === selectedAlumni.id ? { ...a, [field]: value } : a
-    );
-    setAlumniList(updatedList);
-    setSelectedAlumni({ ...selectedAlumni, [field]: value });
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => handleUpdate("image", reader.result);
-      reader.readAsDataURL(file);
+  const fetchAlumni = async () => {
+    setLoading(true);
+    try {
+      const { name, batch, company } = filters;
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/alumni`, {
+        params: { name, batch, company }
+      });
+      setAlumniList(res.data);
+    } catch (err) {
+      console.error("Error fetching alumni", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const filteredAlumni = alumniList.filter(
-    (a) =>
-      a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      a.company.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    fetchAlumni();
+  }, [filters]);
+
+  const handleUpdate = (field, value) => {
+    setSelectedAlumni({ ...selectedAlumni, [field]: value });
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setLoading(true);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/alumni/save`, selectedAlumni, {
+        headers: { Authorization: token }
+      });
+      alert("Profile updated successfully!");
+      setIsEditing(false);
+      fetchAlumni();
+    } catch (err) {
+      alert("Failed to update profile: " + (err.response?.data?.error || err.message));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -86,12 +100,35 @@ const AlumniDirectory = () => {
                     + Add My Profile
                   </button>
                 )}
-                <input
-                  type="text"
-                  className="form-control w-50 mx-auto rounded-pill border-0 shadow py-3"
-                  placeholder="Search by name or company..."
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <div className="row g-2 w-75 mx-auto">
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      className="form-control rounded-pill border-0 shadow py-3 px-4"
+                      placeholder="Name..."
+                      value={filters.name}
+                      onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      className="form-control rounded-pill border-0 shadow py-3 px-4"
+                      placeholder="Batch (Year)..."
+                      value={filters.batch}
+                      onChange={(e) => setFilters({ ...filters, batch: e.target.value })}
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      className="form-control rounded-pill border-0 shadow py-3 px-4"
+                      placeholder="Company..."
+                      value={filters.company}
+                      onChange={(e) => setFilters({ ...filters, company: e.target.value })}
+                    />
+                  </div>
+                </div>
               </div>
               <div className="row g-4">
                 {filteredAlumni.map((alumni) => (
@@ -177,12 +214,13 @@ const AlumniDirectory = () => {
                         </div>
                         {isEditing && isAlumni ? (
                           <button
-                            onClick={() => setIsEditing(false)}
+                            onClick={handleSaveProfile}
+                            disabled={loading}
                             className="btn btn-success rounded-pill px-4 mb-3 w-75 shadow fw-bold"
                           >
-                            Save Changes
+                            {loading ? "Saving..." : "Save Changes"}
                           </button>
-                        ) : isAlumni ? (
+                        ) : isAlumni && user.id === selectedAlumni._id ? (
                           <button
                             onClick={() => setIsEditing(true)}
                             className="btn btn-warning rounded-pill px-4 mb-3 w-75 shadow fw-bold"
