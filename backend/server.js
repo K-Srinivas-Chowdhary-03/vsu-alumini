@@ -78,7 +78,7 @@ startServer();
 // --- MODELS ---
 const Alumni = require("./models/Alumni");
 const Job = require("./models/Job");
-const { Mentorship, Event, News } = require("./models/Networking");
+const { Mentorship, Event } = require("./models/Networking");
 const { verifyToken, authorizeRoles } = require("./middleware/authMiddleware");
 
 // --- ROUTES (REGISTRATION) ---
@@ -149,7 +149,7 @@ app.post("/api/login", async (req, res) => {
 
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET || "SVU_SECRET_KEY",
+      process.env.JWT_SECRET || "VSU_SECRET_KEY",
       { expiresIn: "1h" },
     );
     res.json({
@@ -333,24 +333,5 @@ app.get("/api/events", async (req, res) => {
   }
 });
 
-// --- NEWS ROUTES ---
-app.post("/api/news", verifyToken, authorizeRoles("Admin"), async (req, res) => {
-  try {
-    const news = new News({ ...req.body, postedBy: req.user.id });
-    await news.save();
-    res.status(201).json(news);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to post news" });
-  }
-});
-
-app.get("/api/news", async (req, res) => {
-  try {
-    const news = await News.find().sort({ createdAt: -1 });
-    res.json(news);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch news" });
-  }
-});
 
 // app.listen moved to startServer function

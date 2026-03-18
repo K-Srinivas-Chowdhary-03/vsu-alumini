@@ -51,9 +51,6 @@ const Navbar = () => {
             <li className="nav-item w-100 w-lg-auto">
               <Link className="nav-link px-3 py-2 rounded-3 text-center text-lg-start" to="/events">Events</Link>
             </li>
-            <li className="nav-item w-100 w-lg-auto">
-              <Link className="nav-link px-3 py-2 rounded-3 text-center text-lg-start" to="/news">News</Link>
-            </li>
             <li className="nav-item ms-lg-3 d-flex align-items-center justify-content-center">
               <div className="form-check form-switch ps-0 mt-3 mt-lg-0">
                 <input 

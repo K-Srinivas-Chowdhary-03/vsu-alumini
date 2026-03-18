@@ -19,16 +19,8 @@ const EventSchema = new mongoose.Schema({
   postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Alumni", required: true }
 }, { timestamps: true });
 
-// --- NEWS ---
-const NewsSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  image: { type: String },
-  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Alumni", required: true }
-}, { timestamps: true });
 
 module.exports = {
   Mentorship: mongoose.model("Mentorship", MentorshipSchema),
-  Event: mongoose.model("Event", EventSchema),
-  News: mongoose.model("News", NewsSchema)
+  Event: mongoose.model("Event", EventSchema)
 };

@@ -7,7 +7,6 @@ import JobBoard from "./pages/JobBoard";
 import Login from "./pages/Login";
 import OurAlumni from "./pages/OurAlumni";
 import EventsBoard from "./pages/EventsBoard";
-import NewsPage from "./pages/NewsPage";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -23,7 +22,6 @@ function App() {
         <Route path="/alumni-network" element={<OurAlumni />} />
         <Route path="/jobs" element={<JobBoard />} />
         <Route path="/events" element={<EventsBoard />} />
-        <Route path="/news" element={<NewsPage />} />
       </Routes>
     </Router>
   );
