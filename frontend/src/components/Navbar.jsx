@@ -63,14 +63,6 @@ const Navbar = () => {
                 </label>
               </div>
             </li>
-            <li className="nav-item ms-lg-2">
-              <div className="position-relative">
-                <i className="bi bi-bell-fill text-white fs-5 cursor-pointer"></i>
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: "0.6rem" }}>
-                  2
-                </span>
-              </div>
-            </li>
             {!user ? (
               <li className="nav-item">
                 <Link className="btn btn-warning rounded-pill px-4 ms-lg-3 fw-bold" to="/login">Login</Link>
