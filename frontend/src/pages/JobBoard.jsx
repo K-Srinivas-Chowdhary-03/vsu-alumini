@@ -62,7 +62,7 @@ const JobBoard = () => {
       setShowForm(false);
       fetchJobs();
     } catch (err) {
-      setDialog({ isOpen: true, title: "Error", message: "Error posting job", type: "error" });
+      setDialog({ isOpen: true, title: "Error", message: err.response?.data?.error || "Error posting job", type: "error" });
     }
   };
 

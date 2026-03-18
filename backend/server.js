@@ -43,7 +43,24 @@ const startServer = async () => {
     app.listen(PORT, async () => {
       console.log(`🚀 Backend running on port ${PORT}`);
       
-      // ADMIN SEED REMOVED
+      // SEED ADMIN ACCOUNT
+      const adminEmail = "admin@vsu.com";
+      const existingAdmin = await Alumni.findOne({ email: adminEmail });
+      if (!existingAdmin) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedAdminPassword = await bcrypt.hash("Admin@1234", salt);
+        const adminUser = new Alumni({
+          name: "System Admin",
+          email: adminEmail,
+          password: hashedAdminPassword,
+          rollNumber: "ADMIN001",
+          role: "Admin",
+          isApproved: true,
+          isEmailVerified: true
+        });
+        await adminUser.save();
+        console.log("✅ Admin account seeded: admin@vsu.com / Admin@1234");
+      }
     });
   } catch (err) {
     console.error("❌ MONGODB CONNECTION FATAL ERROR:");
@@ -242,6 +259,41 @@ app.patch("/api/admin/reject/:id", verifyToken, authorizeRoles("Admin"), async (
     res.json({ message: "User registration rejected and removed" });
   } catch (err) {
     res.status(500).json({ error: "Failed to reject user" });
+  }
+});
+
+// DELETE ALUMNI
+app.delete("/api/admin/alumni/:id", verifyToken, authorizeRoles("Admin"), async (req, res) => {
+  try {
+    await Alumni.findByIdAndDelete(req.params.id);
+    res.json({ message: "Alumnus profile removed successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to remove alumnus" });
+  }
+});
+
+// ADD ALUMNI (ADMIN)
+app.post("/api/admin/alumni/add", verifyToken, authorizeRoles("Admin"), async (req, res) => {
+  try {
+    const data = req.body;
+    if (!data.name || !data.email) {
+      return res.status(400).json({ error: "Name and Email are required" });
+    }
+    
+    const existing = await Alumni.findOne({ email: data.email });
+    if (existing) return res.status(400).json({ error: "User already exists" });
+
+    const newUser = new Alumni({
+      ...data,
+      isApproved: true,
+      isEmailVerified: true,
+      password: await bcrypt.hash(data.password || "Alumni@123", 10) // Default password if not provided
+    });
+
+    await newUser.save();
+    res.status(201).json({ message: "Alumnus added successfully", user: newUser });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to add alumnus: " + err.message });
   }
 });
 

@@ -60,21 +60,43 @@ const AlumniDirectory = () => {
     }
   };
 
-  const handleSaveProfile = async () => {
-    try {
-      setLoading(true);
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/alumni/save`, selectedAlumni, {
-        headers: { Authorization: token }
-      });
-      setDialog({ isOpen: true, title: "Success", message: "Profile updated successfully!", type: "success" });
-      setIsEditing(false);
-      fetchAlumni();
-    } catch (err) {
-      setDialog({ isOpen: true, title: "Update Failed", message: (err.response?.data?.error || err.message), type: "error" });
-    } finally {
-      setLoading(false);
-    }
-  };
+   const handleSaveProfile = async () => {
+     try {
+       setLoading(true);
+       if (selectedAlumni._id) {
+         await axios.post(`${import.meta.env.VITE_API_URL}/api/alumni/save`, selectedAlumni, {
+           headers: { Authorization: token }
+         });
+       } else {
+         // It's a new profile being added by Admin
+         await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/alumni/add`, selectedAlumni, {
+           headers: { Authorization: token }
+         });
+       }
+       setDialog({ isOpen: true, title: "Success", message: "Profile saved successfully!", type: "success" });
+       setIsEditing(false);
+       fetchAlumni();
+     } catch (err) {
+       setDialog({ isOpen: true, title: "Error", message: (err.response?.data?.error || err.message), type: "error" });
+     } finally {
+       setLoading(false);
+     }
+   };
+
+   const handleDeleteAlumni = async (id) => {
+     try {
+       setLoading(true);
+       await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/alumni/${id}`, {
+         headers: { Authorization: token }
+       });
+       setDialog({ isOpen: true, title: "Removed", message: "Alumni profile removed successfully", type: "success" });
+       fetchAlumni();
+     } catch (err) {
+       setDialog({ isOpen: true, title: "Error", message: "Failed to remove alumni", type: "error" });
+     } finally {
+       setLoading(false);
+     }
+   };
 
   return (
     <div className="container-fluid py-5 min-vh-100">
@@ -89,6 +111,27 @@ const AlumniDirectory = () => {
             >
               <div className="text-center mb-5 text-white">
                 <h1 className="display-4 fw-bold">VSU-Kavali Alumni Portal</h1>
+                {user?.role === "Admin" && (
+                  <button 
+                    onClick={() => {
+                      const newProfile = {
+                        name: "New Name",
+                        email: `newuser_${Date.now()}@gmail.com`,
+                        rollNumber: `VSU${Date.now()}`,
+                        batchFrom: "2020",
+                        batchTo: "2024",
+                        designation: "Software Engineer",
+                        company: "Company Name",
+                        role: "Alumnus"
+                      };
+                      setSelectedAlumni(newProfile);
+                      setIsEditing(true);
+                    }}
+                    className="btn btn-success rounded-pill px-4 fw-bold shadow mb-4"
+                  >
+                    + Add New Alumnus (Admin Only)
+                  </button>
+                )}
                 <div className="row g-2 w-75 mx-auto">
                   <div className="col-md-4">
                     <input
@@ -140,8 +183,24 @@ const AlumniDirectory = () => {
                           }}
                           alt=""
                         />
-                        <div className="text-start">
-                          <h5 className="fw-bold mb-0">{alumni.name}</h5>
+                        <div className="text-start flex-grow-1">
+                          <div className="d-flex justify-content-between align-items-start">
+                            <h5 className="fw-bold mb-0">{alumni.name}</h5>
+                            {user?.role === "Admin" && (
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (window.confirm("Are you sure you want to remove this profile?")) {
+                                    handleDeleteAlumni(alumni._id);
+                                  }
+                                }}
+                                className="btn btn-link text-danger p-0 border-0"
+                                title="Delete Alumnus"
+                              >
+                                <i className="bi bi-trash-fill fs-5"></i>
+                              </button>
+                            )}
+                          </div>
                           <p className="text-warning small mb-1 fw-bold">
                             Batch: {alumni.batchFrom}-{alumni.batchTo}
                           </p>
