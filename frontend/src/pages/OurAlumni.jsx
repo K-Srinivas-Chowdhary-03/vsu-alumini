@@ -132,7 +132,7 @@ const AlumniDirectory = () => {
               </div>
               <div className="row g-4">
                 {alumniList.map((alumni) => (
-                  <div key={alumni.id} className="col-lg-6 col-xl-4">
+                  <div key={alumni._id} className="col-lg-6 col-xl-4">
                     <motion.div
                       whileHover={{ scale: 1.03 }}
                       className="card border-0 shadow-lg p-4 h-100"
@@ -145,7 +145,7 @@ const AlumniDirectory = () => {
                     >
                       <div className="d-flex align-items-center gap-4">
                         <img
-                          src={alumni.image}
+                          src={alumni.profileImage || `https://ui-avatars.com/api/?name=${alumni.name}&background=random`}
                           className="rounded-circle border border-3 border-warning"
                           style={{
                             width: "90px",
@@ -157,10 +157,10 @@ const AlumniDirectory = () => {
                         <div className="text-start">
                           <h5 className="fw-bold mb-0">{alumni.name}</h5>
                           <p className="text-warning small mb-1 fw-bold">
-                            Batch: {alumni.from}-{alumni.to}
+                            Batch: {alumni.batchFrom}-{alumni.batchTo}
                           </p>
                           <p className="small opacity-75 mb-2">
-                            {alumni.role} at {alumni.company}
+                            {alumni.designation} at {alumni.company}
                           </p>
                           <button
                             onClick={() => setSelectedAlumni(alumni)}
@@ -191,7 +191,7 @@ const AlumniDirectory = () => {
                       <div className="col-md-5 bg-primary p-5 text-center text-white d-flex flex-column align-items-center">
                         <div className="position-relative mb-4">
                           <img
-                            src={selectedAlumni.image}
+                            src={selectedAlumni.profileImage || `https://ui-avatars.com/api/?name=${selectedAlumni.name}&background=random`}
                             className="rounded-circle border border-5 border-white shadow"
                             style={{
                               width: "200px",
@@ -269,23 +269,23 @@ const AlumniDirectory = () => {
                               <input
                                 className="form-control"
                                 placeholder="From Year"
-                                value={selectedAlumni.from}
+                                value={selectedAlumni.batchFrom}
                                 onChange={(e) =>
-                                  handleUpdate("from", e.target.value)
+                                  handleUpdate("batchFrom", e.target.value)
                                 }
                               />
                               <input
                                 className="form-control"
                                 placeholder="To Year"
-                                value={selectedAlumni.to}
+                                value={selectedAlumni.batchTo}
                                 onChange={(e) =>
-                                  handleUpdate("to", e.target.value)
+                                  handleUpdate("batchTo", e.target.value)
                                 }
                               />
                             </div>
                           ) : (
                             <p className="fs-5 fw-bold">
-                              {selectedAlumni.from} - {selectedAlumni.to}
+                              {selectedAlumni.batchFrom} - {selectedAlumni.batchTo}
                             </p>
                           )}
                         </div>
@@ -297,9 +297,9 @@ const AlumniDirectory = () => {
                             <div className="d-flex gap-2">
                               <input
                                 className="form-control"
-                                value={selectedAlumni.role}
+                                value={selectedAlumni.designation}
                                 onChange={(e) =>
-                                  handleUpdate("role", e.target.value)
+                                  handleUpdate("designation", e.target.value)
                                 }
                               />
                               <input
@@ -312,7 +312,7 @@ const AlumniDirectory = () => {
                             </div>
                           ) : (
                             <p className="fs-5 text-primary fw-bold">
-                              {selectedAlumni.role} @ {selectedAlumni.company}
+                              {selectedAlumni.designation} @ {selectedAlumni.company}
                             </p>
                           )}
                         </div>
