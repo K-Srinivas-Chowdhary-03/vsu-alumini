@@ -160,10 +160,10 @@ const Home = () => {
                   className="d-flex justify-content-center gap-3"
                 >
                   <Link
-                    to={user ? "/jobs" : "/login"}
+                    to={user ? "/jobs" : "/register"}
                     className="btn btn-warning btn-lg px-5 py-3 fw-bold rounded-pill shadow"
                   >
-                    {user ? "Explore Jobs" : "Student Login"}
+                    {user ? "Explore Jobs" : "Student Register"}
                   </Link>
                   <Link
                     to="/alumni-network"
