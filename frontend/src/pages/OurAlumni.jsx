@@ -44,6 +44,20 @@ const AlumniDirectory = () => {
     setSelectedAlumni({ ...selectedAlumni, [field]: value });
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        return alert("File is too large. Please select an image under 5MB.");
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleUpdate("profileImage", reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSaveProfile = async () => {
     try {
       setLoading(true);
@@ -202,7 +216,7 @@ const AlumniDirectory = () => {
                                 type="file"
                                 className="d-none"
                                 accept="image/*"
-                                onChange={(e) => console.log("File change not implemented yet")}
+                                onChange={handleImageUpload}
                               />
                             </label>
                           )}
