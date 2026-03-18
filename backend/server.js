@@ -43,28 +43,7 @@ const startServer = async () => {
     app.listen(PORT, async () => {
       console.log(`🚀 Backend running on port ${PORT}`);
       
-      // SEED ADMIN/STAFF ACCOUNT
-      try {
-        const adminEmail = "admin@vsu.com";
-        const existingAdmin = await Alumni.findOne({ email: adminEmail });
-        if (!existingAdmin) {
-          const salt = await bcrypt.genSalt(10);
-          const hashedPassword = await bcrypt.hash("Admin@1234", salt);
-          const newAdmin = new Alumni({
-            name: "College Staff",
-            email: adminEmail,
-            password: hashedPassword,
-            rollNumber: "STAFF001",
-            role: "Admin",
-            isApproved: true,
-            isEmailVerified: true
-          });
-          await newAdmin.save();
-          console.log("✅ Seed: Admin account created (admin@vsu.com)");
-        }
-      } catch (seedErr) {
-        console.error("❌ Seed Error:", seedErr.message);
-      }
+      // ADMIN SEED REMOVED
     });
   } catch (err) {
     console.error("❌ MONGODB CONNECTION FATAL ERROR:");
@@ -313,25 +292,7 @@ app.get("/api/mentorship/my-requests", verifyToken, async (req, res) => {
   }
 });
 
-// --- EVENT ROUTES ---
-app.post("/api/events", verifyToken, authorizeRoles("Admin", "Alumnus"), async (req, res) => {
-  try {
-    const event = new Event({ ...req.body, postedBy: req.user.id });
-    await event.save();
-    res.status(201).json(event);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to create event" });
-  }
-});
-
-app.get("/api/events", async (req, res) => {
-  try {
-    const events = await Event.find().sort({ date: 1 });
-    res.json(events);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch events" });
-  }
-});
+// --- EVENT ROUTES REMOVED ---
 
 
 // app.listen moved to startServer function

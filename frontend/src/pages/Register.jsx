@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
+import CustomDialog from "../components/CustomDialog";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Register = () => {
     company: "",
   });
   const [isRegistering, setIsRegistering] = useState(false);
+  const [dialog, setDialog] = useState({ isOpen: false, title: "", message: "", type: "success" });
 
   const validate = () => {
     if (!formData.email.endsWith("@gmail.com"))
@@ -38,7 +40,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const error = validate();
-    if (error) return alert(error);
+    if (error) return setDialog({ isOpen: true, title: "Validation Error", message: error, type: "error" });
 
     setIsRegistering(true);
     try {
@@ -49,10 +51,10 @@ const Register = () => {
         role: userType === "student" ? "Student" : formData.role,
         isAlumni: userType === "alumni",
       });
-      alert(response.data.message);
-      navigate("/login");
+      setDialog({ isOpen: true, title: "Success!", message: response.data.message, type: "success" });
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      alert(err.response?.data?.error || "Registration failed");
+      setDialog({ isOpen: true, title: "Registration Failed", message: err.response?.data?.error || "Registration failed", type: "error" });
     } finally {
       setIsRegistering(false);
     }
@@ -221,6 +223,13 @@ const Register = () => {
           </div>
         </div>
       </div>
+      <CustomDialog 
+        isOpen={dialog.isOpen} 
+        title={dialog.title} 
+        message={dialog.message} 
+        type={dialog.type} 
+        onClose={() => setDialog({ ...dialog, isOpen: false })} 
+      />
     </div>
   );
 };

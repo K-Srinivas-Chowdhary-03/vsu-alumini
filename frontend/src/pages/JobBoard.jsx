@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import CustomDialog from "../components/CustomDialog";
 import axios from "axios";
 import LogoutButton from "./LogoutButton";
 
@@ -7,6 +8,7 @@ const JobBoard = () => {
   const [jobs, setJobs] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [dialog, setDialog] = useState({ isOpen: false, title: "", message: "", type: "success" });
 
   // 1. Get user data from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
@@ -48,7 +50,7 @@ const JobBoard = () => {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/jobs/post`, formData, {
         headers: { Authorization: token },
       });
-      alert("Job Posted Successfully!");
+      setDialog({ isOpen: true, title: "Success", message: "Job Posted Successfully!", type: "success" });
       setFormData({
         title: "",
         company: "",
@@ -60,7 +62,7 @@ const JobBoard = () => {
       setShowForm(false);
       fetchJobs();
     } catch (err) {
-      alert("Error posting job");
+      setDialog({ isOpen: true, title: "Error", message: "Error posting job", type: "error" });
     }
   };
 
@@ -254,6 +256,13 @@ const JobBoard = () => {
           )}
         </div>
       </div>
+      <CustomDialog 
+        isOpen={dialog.isOpen} 
+        title={dialog.title} 
+        message={dialog.message} 
+        type={dialog.type} 
+        onClose={() => setDialog({ ...dialog, isOpen: false })} 
+      />
     </div>
   );
 };

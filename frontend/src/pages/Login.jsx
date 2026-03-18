@@ -1,14 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import CustomDialog from "../components/CustomDialog";
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [dialog, setDialog] = useState({ isOpen: false, title: "", message: "", type: "success" });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
@@ -18,13 +17,12 @@ const Login = () => {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, formData);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      setShowSuccessDialog(true);
+      setDialog({ isOpen: true, title: "Login Successful", message: "Redirecting to portal...", type: "success" });
       setTimeout(() => {
         navigate("/");
-      }, 1000);
+      }, 1500);
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || "Login Failed. Please check your credentials.");
-      setShowErrorDialog(true);
+      setDialog({ isOpen: true, title: "Login Failed", message: err.response?.data?.error || "Invalid credentials", type: "error" });
     } finally {
       setIsLoading(false);
     }
@@ -93,49 +91,13 @@ const Login = () => {
         </div>
       </div>
 
-      {showSuccessDialog && (
-        <div 
-          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-          style={{ zIndex: 1050, backgroundColor: 'rgba(0,0,0,0.4)' }}
-        >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="bg-success text-white p-4 rounded-4 shadow-lg text-center"
-            style={{ minWidth: "300px" }}
-          >
-            <i className="bi bi-check-circle-fill" style={{ fontSize: "3rem" }}></i>
-            <h4 className="fw-bold mt-3 mb-0">Login Successful!</h4>
-            <p className="small mb-0 mt-2 text-white-50">Redirecting...</p>
-          </motion.div>
-        </div>
-      )}
-
-      {showErrorDialog && (
-        <div 
-          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-          style={{ zIndex: 1050, backgroundColor: 'rgba(0,0,0,0.4)' }}
-        >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="bg-white p-4 rounded-4 shadow-lg text-center border-top border-danger border-5"
-            style={{ minWidth: "320px" }}
-          >
-            <i className="bi bi-x-circle-fill text-danger" style={{ fontSize: "3rem" }}></i>
-            <h4 className="fw-bold mt-3 text-dark">Login Failed</h4>
-            <p className="text-muted mb-4">{errorMessage}</p>
-            <button 
-              className="btn btn-danger w-100 rounded-pill fw-bold py-2"
-              onClick={() => setShowErrorDialog(false)}
-            >
-              Try Again
-            </button>
-          </motion.div>
-        </div>
-      )}
+      <CustomDialog 
+        isOpen={dialog.isOpen} 
+        title={dialog.title} 
+        message={dialog.message} 
+        type={dialog.type} 
+        onClose={() => setDialog({ ...dialog, isOpen: false })} 
+      />
     </div>
   );
 };

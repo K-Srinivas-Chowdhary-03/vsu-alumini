@@ -9,15 +9,6 @@ const MentorshipSchema = new mongoose.Schema({
   topic: { type: String, required: true }
 }, { timestamps: true });
 
-// --- EVENTS ---
-const EventSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  date: { type: Date, required: true },
-  location: { type: String, required: true },
-  rsvp: [{ type: mongoose.Schema.Types.ObjectId, ref: "Alumni" }],
-  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Alumni", required: true }
-}, { timestamps: true });
 
 
 module.exports = {

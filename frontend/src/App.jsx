@@ -6,7 +6,6 @@ import Faculty from "./pages/Faculty";
 import JobBoard from "./pages/JobBoard";
 import Login from "./pages/Login";
 import OurAlumni from "./pages/OurAlumni";
-import EventsBoard from "./pages/EventsBoard";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -21,7 +20,6 @@ function App() {
         {/* Updated path to match the 'Our Alumni' link in Home.jsx */}
         <Route path="/alumni-network" element={<OurAlumni />} />
         <Route path="/jobs" element={<JobBoard />} />
-        <Route path="/events" element={<EventsBoard />} />
       </Routes>
     </Router>
   );

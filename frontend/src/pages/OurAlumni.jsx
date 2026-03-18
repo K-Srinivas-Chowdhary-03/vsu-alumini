@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import CustomDialog from "../components/CustomDialog";
 
 const initialAlumni = [];
 
@@ -9,6 +10,7 @@ const AlumniDirectory = () => {
   const [selectedAlumni, setSelectedAlumni] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [dialog, setDialog] = useState({ isOpen: false, title: "", message: "", type: "success" });
   const [filters, setFilters] = useState({
     name: "",
     batch: "",
@@ -48,7 +50,7 @@ const AlumniDirectory = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        return alert("File is too large. Please select an image under 5MB.");
+        return setDialog({ isOpen: true, title: "File Too Large", message: "Please select an image under 5MB.", type: "error" });
       }
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -64,11 +66,11 @@ const AlumniDirectory = () => {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/alumni/save`, selectedAlumni, {
         headers: { Authorization: token }
       });
-      alert("Profile updated successfully!");
+      setDialog({ isOpen: true, title: "Success", message: "Profile updated successfully!", type: "success" });
       setIsEditing(false);
       fetchAlumni();
     } catch (err) {
-      alert("Failed to update profile: " + (err.response?.data?.error || err.message));
+      setDialog({ isOpen: true, title: "Update Failed", message: (err.response?.data?.error || err.message), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -87,28 +89,6 @@ const AlumniDirectory = () => {
             >
               <div className="text-center mb-5 text-white">
                 <h1 className="display-4 fw-bold">VSU-Kavali Alumni Portal</h1>
-                {user?.role === "Admin" && (
-                  <button 
-                    onClick={() => {
-                      const newProfile = {
-                        _id: `temp_${Date.now()}`,
-                        name: "New Profile",
-                        batchFrom: "2020",
-                        batchTo: "2024",
-                        designation: "Software Engineer",
-                        company: "Company Name",
-                        profileImage: "",
-                        linkedin: ""
-                      };
-                      setAlumniList([newProfile, ...alumniList]);
-                      setSelectedAlumni(newProfile);
-                      setIsEditing(true);
-                    }}
-                    className="btn btn-success rounded-pill px-4 fw-bold shadow mb-4"
-                  >
-                    + Add New Profile (Admin Only)
-                  </button>
-                )}
                 <div className="row g-2 w-75 mx-auto">
                   <div className="col-md-4">
                     <input
@@ -138,11 +118,6 @@ const AlumniDirectory = () => {
                     />
                   </div>
                 </div>
-                {user?.role !== "Student" && (
-                  <div className="text-white-50 mt-3 fw-bold small">
-                    Total {alumniList.length} alumni registered on this portal
-                  </div>
-                )}
               </div>
               <div className="row g-4">
                 {alumniList.map((alumni) => (
@@ -246,10 +221,10 @@ const AlumniDirectory = () => {
                                 await axios.patch(`${import.meta.env.VITE_API_URL}/api/user/upgrade-to-alumni`, {}, {
                                   headers: { Authorization: token }
                                 });
-                                alert("Congratulations! You are now an Alumnus.");
-                                window.location.reload();
+                                setDialog({ isOpen: true, title: "Success", message: "Congratulations! You are now an Alumnus.", type: "success" });
+                                setTimeout(() => window.location.reload(), 2000);
                               } catch (err) {
-                                alert("Upgrade failed: " + (err.response?.data?.error || err.message));
+                                setDialog({ isOpen: true, title: "Upgrade Failed", message: (err.response?.data?.error || err.message), type: "error" });
                               }
                             }}
                             className="btn btn-info rounded-pill px-4 mb-3 w-75 shadow fw-bold text-white"
@@ -395,6 +370,13 @@ const AlumniDirectory = () => {
           )}
         </AnimatePresence>
       </div>
+      <CustomDialog 
+        isOpen={dialog.isOpen} 
+        title={dialog.title} 
+        message={dialog.message} 
+        type={dialog.type} 
+        onClose={() => setDialog({ ...dialog, isOpen: false })} 
+      />
     </div>
   );
 };
