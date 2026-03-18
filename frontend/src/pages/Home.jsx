@@ -28,17 +28,10 @@ const Home = () => {
   };
 
   return (
-    <div
-      className="container-fluid p-0 overflow-hidden"
-      style={{ backgroundColor: "#f8f9fa" }}
-    >
-      {/* --- FIXED TOP NAVBAR WITH THICK BLUE COLOR --- */}
+    <div className="container-fluid p-0 overflow-hidden">
+      {/* --- FIXED TOP NAVBAR --- */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark fixed-top py-3 px-2 z-3"
-        style={{
-          background: "#001d4d", // Deep thick blue
-          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-        }}
+        className="navbar navbar-expand-lg navbar-dark fixed-top py-3 px-2 z-3 shadow-lg"
       >
         <div className="container">
           <Link
@@ -68,7 +61,6 @@ const Home = () => {
           <div 
             className="collapse navbar-collapse" 
             id="navbarNav"
-            style={{ backgroundColor: "#001d4d" }} 
           >
             <ul className="navbar-nav ms-auto gap-3 align-items-center">
               <li className="nav-item">
@@ -133,10 +125,10 @@ const Home = () => {
 
       {/* --- HERO SECTION --- */}
       <section
-        className="vh-100 d-flex align-items-center text-white"
+        className="vh-100 d-flex align-items-center text-white hero-section"
         style={{
-          background: "linear-gradient(135deg, #001d4d 0%, #000c24 100%)",
-          marginTop: "0", // Starts from top behind fixed navbar if desired, or adjust padding
+          background: "linear-gradient(135deg, var(--navbar-bg) 0%, var(--bg-color) 100%)",
+          marginTop: "0",
         }}
       >
         <div className="container position-relative z-2">
@@ -219,15 +211,12 @@ const Home = () => {
 
       {/* --- EMPOWERING SECTION --- */}
       <section
-        className="py-5"
-        style={{
-          background: "linear-gradient(180deg, #001d4d 0%, #0052cc 100%)",
-        }}
+        className="py-5 bg-light"
       >
         <div className="container py-5">
-          <div className="row justify-content-center mb-5 text-white">
+          <div className="row justify-content-center mb-5">
             <div className="col-lg-8 text-center">
-              <span className="badge bg-warning text-dark px-3 py-2 rounded-pill mb-3">
+              <span className="badge bg-warning text-dark px-3 py-2 rounded-pill mb-3 shadow-sm">
                 WHY JOIN THE NETWORK
               </span>
               <h2 className="fw-bold display-5 mb-3">
@@ -267,7 +256,6 @@ const Home = () => {
                     className="card h-100 border-0 shadow-lg p-4"
                     style={{
                       borderRadius: "20px",
-                      background: "rgba(255, 255, 255, 0.98)",
                     }}
                   >
                     <div
@@ -276,8 +264,8 @@ const Home = () => {
                     >
                       <i className={`bi ${item.icon}`}></i>
                     </div>
-                    <h4 className="fw-bold text-dark">{item.title}</h4>
-                    <p className="text-muted small">{item.text}</p>
+                    <h4 className="fw-bold">{item.title}</h4>
+                    <p className="text-secondary small">{item.text}</p>
                   </motion.div>
                 </Link>
               </div>

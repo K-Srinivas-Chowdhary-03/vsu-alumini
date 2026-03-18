@@ -61,12 +61,7 @@ const AlumniDirectory = () => {
   };
 
   return (
-    <div
-      className="container-fluid py-5 min-vh-100"
-      style={{
-        background: "linear-gradient(135deg, #001d4d 0%, #0052cc 100%)",
-      }}
-    >
+    <div className="container-fluid py-5 min-vh-100">
       <div className="container mt-5 pt-4">
         <AnimatePresence mode="wait">
           {!selectedAlumni ? (
@@ -138,9 +133,6 @@ const AlumniDirectory = () => {
                       className="card border-0 shadow-lg p-4 h-100"
                       style={{
                         borderRadius: "25px",
-                        background: "rgba(255, 255, 255, 0.12)",
-                        backdropFilter: "blur(10px)",
-                        color: "white",
                       }}
                     >
                       <div className="d-flex align-items-center gap-4">
@@ -185,10 +177,10 @@ const AlumniDirectory = () => {
                 <div className="col-lg-10">
                   <div
                     className="card border-0 shadow-lg overflow-hidden"
-                    style={{ borderRadius: "30px", background: "white" }}
+                    style={{ borderRadius: "30px" }}
                   >
                     <div className="row g-0">
-                      <div className="col-md-5 bg-primary p-5 text-center text-white d-flex flex-column align-items-center">
+                      <div className="col-md-5 bg-primary p-5 text-center text-white d-flex flex-column align-items-center rounded-start">
                         <div className="position-relative mb-4">
                           <img
                             src={selectedAlumni.profileImage || `https://ui-avatars.com/api/?name=${selectedAlumni.name}&background=random`}
@@ -256,7 +248,7 @@ const AlumniDirectory = () => {
                           Back
                         </button>
                       </div>
-                      <div className="col-md-7 p-5 text-start bg-white">
+                      <div className="col-md-7 p-5 text-start">
                         <h3 className="fw-bold border-bottom pb-3 mb-4">
                           Alumni Profile Details
                         </h3>

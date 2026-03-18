@@ -48,14 +48,20 @@ const Navbar = () => {
             <li className="nav-item">
               <Link className="nav-link px-3" to="/news">News</Link>
             </li>
-            <li className="nav-item ms-lg-3">
-              <button 
-                className="btn btn-outline-warning rounded-circle p-2" 
-                onClick={toggleTheme}
-                title="Toggle Dark/Light Mode"
-              >
-                <i className={`bi bi-${theme === "light" ? "moon-fill" : "sun-fill"}`}></i>
-              </button>
+            <li className="nav-item ms-lg-3 d-flex align-items-center">
+              <div className="form-check form-switch ps-0">
+                <input 
+                  className="form-check-input ms-0 cursor-pointer" 
+                  type="checkbox" 
+                  id="themeToggle"
+                  checked={theme === "dark"}
+                  onChange={toggleTheme}
+                  style={{ width: "2.5rem", height: "1.25rem" }}
+                />
+                <label className="form-check-label text-white-50 small ms-2 d-none d-lg-inline" htmlFor="themeToggle">
+                  {theme === "dark" ? <i className="bi bi-moon-stars-fill text-warning"></i> : <i className="bi bi-sun-fill text-warning"></i>}
+                </label>
+              </div>
             </li>
             <li className="nav-item ms-lg-2">
               <div className="position-relative">

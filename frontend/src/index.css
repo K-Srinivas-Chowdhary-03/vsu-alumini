@@ -1,33 +1,73 @@
 :root {
-  --bg-color: #f8f9fa;
+  --bg-color: #ffffff;
+  --bg-secondary: #f8f9fa;
   --text-color: #212529;
+  --text-secondary: #6c757d;
   --card-bg: #ffffff;
   --navbar-bg: #001d4d;
+  --accent-color: #0d6efd;
+  --border-color: #dee2e6;
+  --input-bg: #ffffff;
 }
 
 [data-theme='dark'] {
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --card-bg: #1e1e1e;
-  --navbar-bg: #000000;
+  --bg-color: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-color: #f8fafc;
+  --text-secondary: #94a3b8;
+  --card-bg: #1e293b;
+  --navbar-bg: #020617;
+  --accent-color: #38bdf8;
+  --border-color: #334155;
+  --input-bg: #475569;
 }
 
 body {
   background-color: var(--bg-color) !important;
   color: var(--text-color) !important;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Outfit', 'Inter', sans-serif;
 }
 
 .card {
   background-color: var(--card-bg) !important;
   color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+  transition: transform 0.3s ease, background-color 0.4s ease;
 }
 
 .navbar {
   background-color: var(--navbar-bg) !important;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.text-muted {
+.form-control {
+  background-color: var(--input-bg) !important;
   color: var(--text-color) !important;
-  opacity: 0.7;
+  border: 1px solid var(--border-color) !important;
+}
+
+.form-control::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 0.6;
+}
+
+.text-muted, .text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color) !important;
+}
+
+.register-page, .login-page {
+  background: var(--bg-secondary) !important;
+}
+
+.hero-section {
+  color: white !important;
+}
+
+.hero-section * {
+  color: inherit !important;
 }

@@ -60,10 +60,7 @@ const Register = () => {
 
   return (
     <div
-      className="container-fluid py-5 min-vh-100 d-flex align-items-center"
-      style={{
-        background: "linear-gradient(135deg, #001d4d 0%, #0052cc 100%)",
-      }}
+      className="container-fluid py-5 min-vh-100 d-flex align-items-center register-page"
     >
       <div className="container">
         <div className="row justify-content-center">
