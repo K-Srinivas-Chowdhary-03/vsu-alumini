@@ -40,7 +40,32 @@ const startServer = async () => {
     console.log("Initial Connection State:", mongoose.connection.readyState); 
 
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
+    app.listen(PORT, async () => {
+      console.log(`🚀 Backend running on port ${PORT}`);
+      
+      // SEED ADMIN/STAFF ACCOUNT
+      try {
+        const adminEmail = "admin@vsu.com";
+        const existingAdmin = await Alumni.findOne({ email: adminEmail });
+        if (!existingAdmin) {
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash("Admin@1234", salt);
+          const newAdmin = new Alumni({
+            name: "College Staff",
+            email: adminEmail,
+            password: hashedPassword,
+            rollNumber: "STAFF001",
+            role: "Admin",
+            isApproved: true,
+            isEmailVerified: true
+          });
+          await newAdmin.save();
+          console.log("✅ Seed: Admin account created (admin@vsu.com)");
+        }
+      } catch (seedErr) {
+        console.error("❌ Seed Error:", seedErr.message);
+      }
+    });
   } catch (err) {
     console.error("❌ MONGODB CONNECTION FATAL ERROR:");
     console.error(err);

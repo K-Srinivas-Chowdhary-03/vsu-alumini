@@ -64,6 +64,30 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-secondary) !important;
 }
 
+.nav-link {
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent-color) !important;
+}
+
+.navbar-collapse {
+  transition: all 0.4s ease-in-out;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background: var(--navbar-bg);
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-top: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+}
+
 .hero-section {
   color: white !important;
 }
