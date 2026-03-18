@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
 
 const app = express();
 
@@ -82,8 +81,6 @@ app.post("/api/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const verificationToken = crypto.randomBytes(32).toString("hex");
-
     const newUser = new Alumni({
       name,
       email,
@@ -97,18 +94,12 @@ app.post("/api/register", async (req, res) => {
       designation: role,
       company: company || "Not specified",
       isApproved: true, 
-      isEmailVerified: false,
-      verificationToken: verificationToken
+      isEmailVerified: true
     });
 
     await newUser.save();
 
-    // SIMULATED EMAIL LOGGING
-    console.log(`\n--- VERIFICATION EMAIL SENT TO ${email} ---`);
-    console.log(`Link: http://localhost:5001/api/verify-email/${verificationToken}`);
-    console.log(`-------------------------------------------\n`);
-
-    res.status(201).json({ message: "Registration successful! Please check your email (simulated in console) to verify your account." });
+    res.status(201).json({ message: "Registration successful! You can now log in." });
   } catch (err) {
     res.status(500).json({ error: "Database Error: " + err.message });
   }
@@ -128,10 +119,6 @@ app.post("/api/login", async (req, res) => {
       if (password !== user.password) {
         return res.status(400).json({ error: "Invalid credentials" });
       }
-    }
-
-    if (!user.isEmailVerified) {
-      return res.status(403).json({ error: "Please verify your email before logging in." });
     }
 
     const token = jwt.sign(
@@ -253,22 +240,7 @@ app.patch("/api/admin/reject/:id", verifyToken, authorizeRoles("Admin"), async (
   }
 });
 
-// --- NEW VERIFICATION & UPGRADE ROUTES ---
-
-app.get("/api/verify-email/:token", async (req, res) => {
-  try {
-    const user = await Alumni.findOne({ verificationToken: req.params.token });
-    if (!user) return res.status(400).send("<h1>Verification Failed</h1><p>Invalid or expired link.</p>");
-
-    user.isEmailVerified = true;
-    user.verificationToken = undefined;
-    await user.save();
-
-    res.send("<h1>Email Verified!</h1><p>You can now close this tab and log in to the portal.</p>");
-  } catch (err) {
-    res.status(500).send("Verification failed.");
-  }
-});
+// --- UPGRADE ROUTE ---
 
 app.patch("/api/user/upgrade-to-alumni", verifyToken, async (req, res) => {
   try {
