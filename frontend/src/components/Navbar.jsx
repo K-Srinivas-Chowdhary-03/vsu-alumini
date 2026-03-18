@@ -3,7 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  let user = null;
+  try {
+    const userData = localStorage.getItem("user");
+    user = userData ? JSON.parse(userData) : null;
+  } catch (err) {
+    console.error("Error parsing user data", err);
+  }
 
   const [theme, setTheme] = React.useState(localStorage.getItem("theme") || "light");
 

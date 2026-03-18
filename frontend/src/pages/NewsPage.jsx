@@ -3,9 +3,17 @@ import axios from "axios";
 import { motion } from "framer-motion";
 
 const NewsPage = () => {
+  const [newsList, setNewsList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showPostForm, setShowPostForm] = useState(false);
   const [newNews, setNewNews] = useState({ title: "", content: "", image: "" });
-  const user = JSON.parse(localStorage.getItem("user"));
+  let user = null;
+  try {
+    const userData = localStorage.getItem("user");
+    user = userData ? JSON.parse(userData) : null;
+  } catch (err) {
+    console.error("Error parsing user data", err);
+  }
   const isAdmin = user?.role === "Admin";
 
   const fetchNews = async () => {

@@ -3,8 +3,17 @@ import axios from "axios";
 import { motion } from "framer-motion";
 
 const EventsBoard = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", date: "", location: "", description: "" });
+  let user = null;
+  try {
+    const userData = localStorage.getItem("user");
+    user = userData ? JSON.parse(userData) : null;
+  } catch (err) {
+    console.error("Error parsing user data", err);
+  }
   const isAdminOrAlumni = user?.role === "Admin" || user?.role === "Alumnus";
 
   const fetchEvents = async () => {
