@@ -132,8 +132,8 @@ const Home = () => {
         }}
       >
         <div className="container position-relative z-2">
-          <div className="row align-items-center mt-5">
-            <div className="col-lg-7 text-center text-lg-start">
+          <div className="row justify-content-center mt-5">
+            <div className="col-lg-10 text-center">
               <motion.div initial="hidden" animate="visible">
                 <motion.span
                   variants={fadeInUp}
@@ -157,7 +157,7 @@ const Home = () => {
                 </motion.p>
                 <motion.div
                   variants={fadeInUp}
-                  className="d-flex justify-content-center justify-content-lg-start gap-3"
+                  className="d-flex justify-content-center gap-3"
                 >
                   <Link
                     to={user ? "/jobs" : "/login"}
