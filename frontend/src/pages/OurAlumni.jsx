@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
 
 const initialAlumni = [];
 
@@ -93,7 +94,6 @@ const AlumniDirectory = () => {
                       setAlumniList([newProfile, ...alumniList]);
                       setSelectedAlumni(newProfile);
                       setIsEditing(true);
-                      setSearchTerm("");
                     }}
                     className="btn btn-success rounded-pill px-4 fw-bold shadow mb-4"
                   >
@@ -131,7 +131,7 @@ const AlumniDirectory = () => {
                 </div>
               </div>
               <div className="row g-4">
-                {filteredAlumni.map((alumni) => (
+                {alumniList.map((alumni) => (
                   <div key={alumni.id} className="col-lg-6 col-xl-4">
                     <motion.div
                       whileHover={{ scale: 1.03 }}
@@ -207,7 +207,7 @@ const AlumniDirectory = () => {
                                 type="file"
                                 className="d-none"
                                 accept="image/*"
-                                onChange={handleFileChange}
+                                onChange={(e) => console.log("File change not implemented yet")}
                               />
                             </label>
                           )}

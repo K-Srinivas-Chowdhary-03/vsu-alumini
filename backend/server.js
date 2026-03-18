@@ -86,7 +86,7 @@ app.post("/api/register", async (req, res) => {
     });
 
     await newUser.save();
-    res.status(201).json({ message: "Registration successful! Pending admin approval." });
+    res.status(201).json({ message: "Registration successful! You can now log in." });
   } catch (err) {
     res.status(500).json({ error: "Database Error: " + err.message });
   }
