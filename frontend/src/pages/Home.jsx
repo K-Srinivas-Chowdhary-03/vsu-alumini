@@ -332,7 +332,7 @@ const Home = () => {
               <ul className="list-unstyled opacity-75 small d-flex flex-column gap-2">
                 <li>
                   <a href="#" className="text-white text-decoration-none">
-                    About SVU
+                    About VSU
                   </a>
                 </li>
                 <li>

@@ -9,7 +9,7 @@ const createAdmin = async () => {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");
 
-    const adminEmail = "admin@svu.com";
+    const adminEmail = "admin@vsu.com";
     const existingAdmin = await Alumni.findOne({ email: adminEmail });
 
     if (existingAdmin) {
@@ -18,7 +18,7 @@ const createAdmin = async () => {
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash("Admin@123", salt);
+    const hashedPassword = await bcrypt.hash("Admin@1234", salt);
 
     const admin = new Alumni({
       name: "System Admin",
@@ -31,8 +31,8 @@ const createAdmin = async () => {
 
     await admin.save();
     console.log("Admin user created successfully!");
-    console.log("Email: admin@svu.com");
-    console.log("Password: Admin@123");
+    console.log("Email: admin@vsu.com");
+    console.log("Password: Admin@1234");
     process.exit(0);
   } catch (err) {
     console.error("Error creating admin:", err);

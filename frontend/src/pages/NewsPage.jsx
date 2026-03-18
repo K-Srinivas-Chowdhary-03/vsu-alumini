@@ -3,8 +3,10 @@ import axios from "axios";
 import { motion } from "framer-motion";
 
 const NewsPage = () => {
-  const [newsList, setNewsList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [newNews, setNewNews] = useState({ title: "", content: "", image: "" });
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = user?.role === "Admin";
 
   const fetchNews = async () => {
     try {
@@ -12,6 +14,24 @@ const NewsPage = () => {
       setNewsList(res.data);
     } catch (err) {
       console.error("Error fetching news", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePostNews = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/news`, newNews, {
+        headers: { Authorization: localStorage.getItem("token") }
+      });
+      alert("News posted successfully!");
+      setShowPostForm(false);
+      setNewNews({ title: "", content: "", image: "" });
+      fetchNews();
+    } catch (err) {
+      alert("Failed to post news: " + (err.response?.data?.error || err.message));
     } finally {
       setLoading(false);
     }
@@ -25,6 +45,39 @@ const NewsPage = () => {
     <div className="container-fluid py-5 min-vh-100" style={{ background: "#f0f2f5" }}>
       <div className="container mt-5 pt-4">
         <h1 className="fw-bold text-dark mb-4 text-center">News & Announcements</h1>
+
+        {isAdmin && (
+          <div className="text-center mb-5">
+            <button 
+              className="btn btn-primary rounded-pill px-4 fw-bold shadow"
+              onClick={() => setShowPostForm(!showPostForm)}
+            >
+              {showPostForm ? "Cancel Posting" : "+ Post New Update"}
+            </button>
+
+            {showPostForm && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-4 text-start bg-white p-4 rounded-4 shadow-sm mx-auto" style={{ maxWidth: "600px" }}>
+                <form onSubmit={handlePostNews}>
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">Title</label>
+                    <input type="text" className="form-control rounded-pill" required value={newNews.title} onChange={(e) => setNewNews({...newNews, title: e.target.value})} />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">Content</label>
+                    <textarea className="form-control rounded-4" rows="3" required value={newNews.content} onChange={(e) => setNewNews({...newNews, content: e.target.value})}></textarea>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">Image URL (Optional)</label>
+                    <input type="text" className="form-control rounded-pill" value={newNews.image} onChange={(e) => setNewNews({...newNews, image: e.target.value})} />
+                  </div>
+                  <button type="submit" className="btn btn-success rounded-pill px-4 fw-bold w-100" disabled={loading}>
+                    {loading ? "Posting..." : "Submit Post"}
+                  </button>
+                </form>
+              </motion.div>
+            )}
+          </div>
+        )}
         
         {loading ? (
           <div className="text-center py-5">
