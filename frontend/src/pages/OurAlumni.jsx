@@ -124,6 +124,9 @@ const AlumniDirectory = () => {
                     />
                   </div>
                 </div>
+                <div className="text-white-50 mt-3 fw-bold small">
+                  Total {alumniList.length} alumni registered on this portal
+                </div>
               </div>
               <div className="row g-4">
                 {alumniList.map((alumni) => (
