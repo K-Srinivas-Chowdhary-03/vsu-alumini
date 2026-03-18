@@ -14,7 +14,7 @@ const AlumniSchema = new mongoose.Schema(
       enum: ["Admin", "Alumnus", "Student"],
       default: "Student"
     },
-    isApproved: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: true },
     designation: { type: String, default: "" },
     company: { type: String, default: "" },
     linkedin: { type: String, default: "" },

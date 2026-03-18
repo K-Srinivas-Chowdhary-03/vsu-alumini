@@ -37,11 +37,6 @@ const Navbar = () => {
             <li className="nav-item">
               <Link className="nav-link px-3" to="/news">News</Link>
             </li>
-            {user?.role === "Admin" && (
-              <li className="nav-item">
-                <Link className="nav-link px-3 text-warning fw-bold" to="/admin">Admin Panel</Link>
-              </li>
-            )}
             {!user ? (
               <li className="nav-item">
                 <Link className="btn btn-warning rounded-pill px-4 ms-lg-3 fw-bold" to="/login">Login</Link>

@@ -82,7 +82,7 @@ app.post("/api/register", async (req, res) => {
           : "Student",
       designation: role,
       company: company || "Not specified",
-      isApproved: false, // All new users need approval except maybe first admin
+      isApproved: true, // Auto-approved
     });
 
     await newUser.save();
@@ -103,14 +103,9 @@ app.post("/api/login", async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      // Temporary check for unhashed legacy passwords
       if (password !== user.password) {
         return res.status(400).json({ error: "Invalid credentials" });
       }
-    }
-
-    if (user.role !== "Admin" && !user.isApproved) {
-      return res.status(403).json({ error: "Your account is pending admin approval." });
     }
 
     const token = jwt.sign(
