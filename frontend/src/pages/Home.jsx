@@ -175,36 +175,6 @@ const Home = () => {
               </motion.div>
             </div>
 
-            <div className="col-lg-5 d-none d-lg-block">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1 }}
-              >
-                <div
-                  className="card bg-white bg-opacity-10 border-white border-opacity-25 p-5 backdrop-blur text-center shadow-lg"
-                  style={{ borderRadius: "40px" }}
-                >
-                  <h5 className="text-warning text-uppercase small mb-4 fw-bold">
-                    Department Achievements
-                  </h5>
-                  <div className="mb-4 text-white">
-                    <h2 className="display-4 fw-bold">A+</h2>
-                    <p className="text-uppercase small">NAAC Accredited</p>
-                  </div>
-                  <div className="d-flex justify-content-around text-white">
-                    <div>
-                      <h3 className="fw-bold mb-0">35+</h3>
-                      <p className="small">Faculty</p>
-                    </div>
-                    <div className="border-start border-white border-opacity-25 px-4">
-                      <h3 className="fw-bold mb-0">5k+</h3>
-                      <p className="small">Alumni</p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
           </div>
         </div>
       </section>
