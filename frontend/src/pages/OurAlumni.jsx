@@ -10,6 +10,7 @@ const AlumniDirectory = () => {
   const [selectedAlumni, setSelectedAlumni] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [dialog, setDialog] = useState({ isOpen: false, title: "", message: "", type: "success" });
   const [filters, setFilters] = useState({
     name: "",
@@ -190,9 +191,13 @@ const AlumniDirectory = () => {
                               <button 
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  if (window.confirm("Are you sure you want to remove this profile?")) {
-                                    handleDeleteAlumni(alumni._id);
-                                  }
+                                  setConfirmDeleteId(alumni._id);
+                                  setDialog({ 
+                                    isOpen: true, 
+                                    title: "Warning: Deletion", 
+                                    message: "Are you sure you want to remove this profile?", 
+                                    type: "warning" 
+                                  });
                                 }}
                                 className="btn btn-link text-danger p-0 border-0"
                                 title="Delete Alumnus"
@@ -434,7 +439,11 @@ const AlumniDirectory = () => {
         title={dialog.title} 
         message={dialog.message} 
         type={dialog.type} 
-        onClose={() => setDialog({ ...dialog, isOpen: false })} 
+        onClose={() => {
+          setDialog({ ...dialog, isOpen: false });
+          setConfirmDeleteId(null);
+        }}
+        onConfirm={confirmDeleteId ? () => handleDeleteAlumni(confirmDeleteId) : null}
       />
     </div>
   );
