@@ -112,7 +112,7 @@ const AlumniDirectory = () => {
             >
               <div className="text-center mb-5 text-white">
                 <h1 className="display-4 fw-bold">VSU-Kavali Alumni Portal</h1>
-                {(user?.role === "Admin" || user?.role === "Alumnus") && (
+                {user?.role === "Admin" && (
                   <button 
                     onClick={() => {
                       const newProfile = {
@@ -187,7 +187,7 @@ const AlumniDirectory = () => {
                         <div className="text-start flex-grow-1">
                           <div className="d-flex justify-content-between align-items-start">
                             <h5 className="fw-bold mb-0">{alumni.name}</h5>
-                            {(user?.role === "Admin" || user?.role === "Alumnus") && (
+                            {user?.role === "Admin" && (
                               <button 
                                 onClick={(e) => {
                                   e.stopPropagation();

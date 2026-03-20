@@ -266,8 +266,8 @@ app.patch("/api/admin/reject/:id", verifyToken, authorizeRoles("Admin"), async (
   }
 });
 
-// DELETE ALUMNI
-app.delete("/api/admin/alumni/:id", verifyToken, authorizeRoles("Admin", "Alumnus"), async (req, res) => {
+// DELETE ALUMNI (Admin only)
+app.delete("/api/admin/alumni/:id", verifyToken, authorizeRoles("Admin"), async (req, res) => {
   try {
     await Alumni.findByIdAndDelete(req.params.id);
     res.json({ message: "Alumnus profile removed successfully" });
@@ -276,8 +276,8 @@ app.delete("/api/admin/alumni/:id", verifyToken, authorizeRoles("Admin", "Alumnu
   }
 });
 
-// ADD ALUMNI (ADMIN/ALUMNUS)
-app.post("/api/admin/alumni/add", verifyToken, authorizeRoles("Admin", "Alumnus"), async (req, res) => {
+// ADD ALUMNI (Admin only)
+app.post("/api/admin/alumni/add", verifyToken, authorizeRoles("Admin"), async (req, res) => {
   try {
     const data = req.body;
     if (!data.name || !data.email) {
