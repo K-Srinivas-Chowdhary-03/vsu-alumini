@@ -89,7 +89,7 @@ const AlumniDirectory = () => {
        await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/alumni/${id}`, {
          headers: { Authorization: token }
        });
-       setDialog({ isOpen: true, title: "Removed", message: "Alumni profile removed successfully", type: "success" });
+       setDialog({ isOpen: true, title: "Action Completed", message: "Removed Successfully", type: "error" });
        fetchAlumni();
      } catch (err) {
        setDialog({ isOpen: true, title: "Error", message: "Failed to remove alumni", type: "error" });
