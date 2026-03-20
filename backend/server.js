@@ -74,7 +74,7 @@ startServer();
 // --- MODELS ---
 const Alumni = require("./models/Alumni");
 const Job = require("./models/Job");
-const { Mentorship, Event } = require("./models/Networking");
+const { Mentorship } = require("./models/Networking");
 const { verifyToken, authorizeRoles } = require("./middleware/authMiddleware");
 
 // --- ROUTES (REGISTRATION) ---
@@ -162,6 +162,10 @@ app.post("/api/jobs/post", verifyToken, async (req, res) => {
   try {
     const { title, company, location, description, postedBy, link } = req.body;
     
+    if (!title || !company || !location || !description || !postedBy) {
+      return res.status(400).json({ error: "Missing required fields for job posting." });
+    }
+
     // Create new job
     const newJob = new Job({
       title,
@@ -263,7 +267,7 @@ app.patch("/api/admin/reject/:id", verifyToken, authorizeRoles("Admin"), async (
 });
 
 // DELETE ALUMNI
-app.delete("/api/admin/alumni/:id", verifyToken, authorizeRoles("Admin"), async (req, res) => {
+app.delete("/api/admin/alumni/:id", verifyToken, authorizeRoles("Admin", "Alumnus"), async (req, res) => {
   try {
     await Alumni.findByIdAndDelete(req.params.id);
     res.json({ message: "Alumnus profile removed successfully" });
@@ -272,8 +276,8 @@ app.delete("/api/admin/alumni/:id", verifyToken, authorizeRoles("Admin"), async 
   }
 });
 
-// ADD ALUMNI (ADMIN)
-app.post("/api/admin/alumni/add", verifyToken, authorizeRoles("Admin"), async (req, res) => {
+// ADD ALUMNI (ADMIN/ALUMNUS)
+app.post("/api/admin/alumni/add", verifyToken, authorizeRoles("Admin", "Alumnus"), async (req, res) => {
   try {
     const data = req.body;
     if (!data.name || !data.email) {

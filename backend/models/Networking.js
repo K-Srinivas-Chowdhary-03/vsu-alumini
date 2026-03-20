@@ -12,6 +12,5 @@ const MentorshipSchema = new mongoose.Schema({
 
 
 module.exports = {
-  Mentorship: mongoose.model("Mentorship", MentorshipSchema),
-  Event: mongoose.model("Event", EventSchema)
+  Mentorship: mongoose.model("Mentorship", MentorshipSchema)
 };

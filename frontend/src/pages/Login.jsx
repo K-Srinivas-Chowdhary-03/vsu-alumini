@@ -6,6 +6,7 @@ import CustomDialog from "../components/CustomDialog";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [dialog, setDialog] = useState({ isOpen: false, title: "", message: "", type: "success" });
   const [isLoading, setIsLoading] = useState(false);
@@ -55,15 +56,24 @@ const Login = () => {
                 </div>
                 <div className="mb-4">
                   <label className="small fw-bold">PASSWORD</label>
-                  <input
-                    type="password"
-                    minLength="6"
-                    className="form-control"
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    required
-                  />
+                  <div className="input-group">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      minLength="6"
+                      className="form-control border-end-0"
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
+                      required
+                    />
+                    <button
+                      className="btn btn-outline-secondary border-start-0"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <i className={`bi bi-eye${showPassword ? "-slash" : ""}-fill`}></i>
+                    </button>
+                  </div>
                 </div>
                 <button
                   type="submit"

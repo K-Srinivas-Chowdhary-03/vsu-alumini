@@ -8,6 +8,8 @@ const Register = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState("student"); // student or alumni
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -136,32 +138,50 @@ const Register = () => {
                 </div>
                 <div className="col-md-6">
                   <label className="small fw-bold">CREATE PASSWORD</label>
-                  <input
-                    type="password"
-                    name="password"
-                    className="form-control"
-                    placeholder="••••••••"
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    required
-                  />
+                  <div className="input-group">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      className="form-control border-end-0"
+                      placeholder="••••••••"
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
+                      required
+                    />
+                    <button
+                      className="btn btn-outline-secondary border-start-0"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <i className={`bi bi-eye${showPassword ? "-slash" : ""}-fill`}></i>
+                    </button>
+                  </div>
                 </div>
                 <div className="col-md-6">
                   <label className="small fw-bold">CONFIRM PASSWORD</label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    className="form-control"
-                    placeholder="••••••••"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        confirmPassword: e.target.value,
-                      })
-                    }
-                    required
-                  />
+                  <div className="input-group">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      className="form-control border-end-0"
+                      placeholder="••••••••"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          confirmPassword: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                    <button
+                      className="btn btn-outline-secondary border-start-0"
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      <i className={`bi bi-eye${showConfirmPassword ? "-slash" : ""}-fill`}></i>
+                    </button>
+                  </div>
                 </div>
 
                 {/* --- ALUMNI ONLY FIELDS --- */}

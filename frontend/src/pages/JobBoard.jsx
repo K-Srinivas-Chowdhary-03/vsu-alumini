@@ -47,7 +47,10 @@ const JobBoard = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/jobs/post`, formData, {
+      // Ensure postedBy is updated with latest user name
+      const jobData = { ...formData, postedBy: user?.name || "Anonymous" };
+      
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/jobs/post`, jobData, {
         headers: { Authorization: token },
       });
       setDialog({ isOpen: true, title: "Success", message: "Job Posted Successfully!", type: "success" });
@@ -56,12 +59,13 @@ const JobBoard = () => {
         company: "",
         location: "",
         description: "",
-        postedBy: user.name,
+        postedBy: user?.name || "Anonymous",
         link: "",
       });
       setShowForm(false);
       fetchJobs();
     } catch (err) {
+      console.error("Job Post Error:", err.response?.data || err.message);
       setDialog({ isOpen: true, title: "Error", message: err.response?.data?.error || "Error posting job", type: "error" });
     }
   };
